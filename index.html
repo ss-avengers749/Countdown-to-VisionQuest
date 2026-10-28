@@ -1,0 +1,1064 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VISIONQUEST | Episode Countdown</title>
+
+<style>
+:root {
+    --red: #ff303b;
+    --bright-red: #ff5963;
+    --dark-red: #650e19;
+    --black: #050507;
+    --white: #f7f3f3;
+    --muted: #a9a1a5;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    min-height: 100%;
+    background: var(--black);
+}
+
+body {
+    min-height: 100vh;
+    min-height: 100svh;
+    overflow-x: hidden;
+    color: var(--white);
+    background:
+        radial-gradient(ellipse at 50% 40%, #341016 0%, #11080c 46%, #030305 100%);
+    font-family: Arial, Helvetica, sans-serif;
+    position: relative;
+}
+
+/* FULL BACKGROUND ARTWORK */
+
+.background-art {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background-image:
+        linear-gradient(
+            180deg,
+            rgba(3, 3, 6, 0.23),
+            rgba(3, 3, 6, 0.42) 55%,
+            rgba(3, 3, 6, 0.85)
+        ),
+        url("visionquest-background.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    pointer-events: none;
+}
+
+/* ATMOSPHERIC CIRCUITRY */
+
+.circuit-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.25;
+    background-image:
+        linear-gradient(90deg, transparent 49.8%, #ff303b 50%, transparent 50.2%),
+        linear-gradient(0deg, transparent 49.8%, #ff303b 50%, transparent 50.2%);
+    background-size: 115px 115px;
+    mask-image: radial-gradient(ellipse at center, black, transparent 75%);
+}
+
+.scanlines {
+    position: fixed;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0.075;
+    background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 3px,
+        rgba(255, 255, 255, 0.18) 4px
+    );
+}
+
+.glow {
+    position: fixed;
+    width: 360px;
+    height: 360px;
+    border-radius: 50%;
+    background: rgba(255, 26, 47, 0.11);
+    filter: blur(100px);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.glow-left {
+    left: -200px;
+    top: 20%;
+}
+
+.glow-right {
+    right: -200px;
+    bottom: 5%;
+}
+
+/* TOP BAR */
+
+.top-bar {
+    position: relative;
+    z-index: 5;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 20px 30px;
+}
+
+.system-label {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--bright-red);
+    font-weight: 800;
+}
+
+.local-clock {
+    font-family: "Courier New", monospace;
+    text-align: right;
+    color: #f0dfe1;
+    font-size: 12px;
+    letter-spacing: 1px;
+    line-height: 1.7;
+}
+
+.local-clock small {
+    display: block;
+    color: var(--muted);
+    font-size: 9px;
+    letter-spacing: 2px;
+}
+
+/* MAIN LAYOUT */
+
+main {
+    position: relative;
+    z-index: 4;
+    width: 100%;
+    min-height: calc(100vh - 78px);
+    min-height: calc(100svh - 78px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 22px 35px;
+}
+
+.page {
+    width: min(100%, 940px);
+    text-align: center;
+    animation: appear 0.45s ease both;
+}
+
+.hidden {
+    display: none !important;
+}
+
+@keyframes appear {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* LOGO */
+
+.logo-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 0 auto 12px;
+}
+
+.logo {
+    display: block;
+    width: min(100%, 510px);
+    max-height: 190px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 17px rgba(255, 25, 48, 0.34));
+}
+
+/* CSS TITLE FALLBACK IF THERE IS NO LOGO IMAGE */
+
+.logo-fallback {
+    font-size: clamp(35px, 7vw, 72px);
+    line-height: 0.95;
+    font-weight: 1000;
+    font-style: italic;
+    letter-spacing: 5px;
+    color: #fff;
+    text-shadow:
+        0 0 10px rgba(255, 38, 54, 0.85),
+        0 0 35px rgba(255, 20, 45, 0.35);
+}
+
+.logo-fallback span {
+    color: var(--red);
+}
+
+.eyebrow {
+    color: var(--red);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 5px;
+    margin-bottom: 13px;
+}
+
+.intro-title {
+    font-size: clamp(23px, 4vw, 39px);
+    line-height: 1.12;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.intro-subtitle {
+    margin: 12px auto 30px;
+    color: #c2b8bc;
+    font-size: 13px;
+    letter-spacing: 1px;
+    line-height: 1.7;
+    max-width: 510px;
+}
+
+/* EPISODE SELECTION */
+
+.episode-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 15px;
+    width: 100%;
+    max-width: 850px;
+    margin: 0 auto;
+}
+
+.episode-card {
+    min-width: 0;
+    min-height: 174px;
+    position: relative;
+    overflow: hidden;
+    padding: 22px 15px;
+    border: 1px solid rgba(255, 48, 59, 0.43);
+    background:
+        linear-gradient(145deg, rgba(47, 13, 20, 0.86), rgba(5, 5, 8, 0.92));
+    color: white;
+    text-align: left;
+    cursor: pointer;
+    transition:
+        transform 0.22s ease,
+        border-color 0.22s ease,
+        box-shadow 0.22s ease,
+        background 0.22s ease;
+}
+
+.episode-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--red);
+    box-shadow: 0 0 15px var(--red);
+}
+
+.episode-card::after {
+    content: "";
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    right: -55px;
+    bottom: -60px;
+    border: 1px solid rgba(255, 48, 59, 0.4);
+    transform: rotate(45deg);
+}
+
+.episode-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--bright-red);
+    background: linear-gradient(
+        145deg,
+        rgba(93, 15, 28, 0.94),
+        rgba(9, 5, 9, 0.97)
+    );
+    box-shadow: 0 0 30px rgba(255, 25, 47, 0.16);
+}
+
+.episode-card:focus-visible,
+.back-button:focus-visible {
+    outline: 2px solid white;
+    outline-offset: 4px;
+}
+
+.card-index {
+    display: block;
+    font-family: "Courier New", monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--red);
+    margin-bottom: 16px;
+}
+
+.card-title {
+    display: block;
+    font-size: clamp(16px, 2vw, 23px);
+    font-weight: 900;
+    letter-spacing: 0.4px;
+    line-height: 1.15;
+    margin-bottom: 11px;
+}
+
+.card-date {
+    display: block;
+    color: #b8aeb2;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.card-action {
+    display: block;
+    margin-top: 19px;
+    color: var(--bright-red);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.status-line {
+    margin-top: 25px;
+    color: #82777c;
+    font-family: "Courier New", monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+}
+
+/* COUNTDOWN PAGE */
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 22px;
+    border: 1px solid rgba(255, 48, 59, 0.45);
+    padding: 11px 15px;
+    color: #f4e9eb;
+    background: rgba(8, 5, 8, 0.75);
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    transition: background 0.2s ease;
+}
+
+.back-button:hover {
+    background: rgba(102, 13, 26, 0.8);
+}
+
+.countdown-panel {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 28px 22px 24px;
+    border: 1px solid rgba(255, 48, 59, 0.48);
+    background: linear-gradient(
+        135deg,
+        rgba(20, 7, 12, 0.88),
+        rgba(4, 4, 7, 0.92)
+    );
+    box-shadow:
+        0 0 50px rgba(255, 22, 45, 0.08),
+        inset 0 0 35px rgba(255, 22, 45, 0.035);
+}
+
+.countdown-panel::before,
+.countdown-panel::after {
+    content: "";
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border-color: var(--red);
+    border-style: solid;
+}
+
+.countdown-panel::before {
+    top: -1px;
+    left: -1px;
+    border-width: 2px 0 0 2px;
+}
+
+.countdown-panel::after {
+    right: -1px;
+    bottom: -1px;
+    border-width: 0 2px 2px 0;
+}
+
+.countdown-title {
+    font-size: clamp(24px, 5vw, 43px);
+    font-weight: 1000;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    line-height: 1.15;
+}
+
+.release-label {
+    color: #c1b2b7;
+    font-size: 12px;
+    margin-top: 12px;
+    letter-spacing: 1px;
+    line-height: 1.7;
+}
+
+.countdown {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    margin: 30px auto 22px;
+    max-width: 680px;
+}
+
+.time-box {
+    min-width: 0;
+    padding: 18px 5px 15px;
+    border: 1px solid rgba(255, 48, 59, 0.25);
+    background: rgba(255, 255, 255, 0.025);
+}
+
+.time-value {
+    display: block;
+    color: #fff;
+    font-family: "Courier New", monospace;
+    font-size: clamp(28px, 5vw, 53px);
+    font-weight: 700;
+    line-height: 1.1;
+    text-shadow: 0 0 18px rgba(255, 38, 54, 0.24);
+    font-variant-numeric: tabular-nums;
+}
+
+.time-label {
+    display: block;
+    margin-top: 9px;
+    color: var(--red);
+    font-size: 9px;
+    letter-spacing: 2px;
+    font-weight: 800;
+}
+
+.target-time {
+    color: #c9bdc1;
+    font-size: 11px;
+    line-height: 1.9;
+    overflow-wrap: anywhere;
+}
+
+.target-time strong {
+    color: white;
+}
+
+.finished-message {
+    display: none;
+    color: var(--bright-red);
+    font-size: clamp(20px, 4vw, 32px);
+    font-weight: 900;
+    letter-spacing: 2px;
+    padding: 25px 0;
+}
+
+.finished .countdown,
+.finished .release-label {
+    display: none;
+}
+
+.finished .finished-message {
+    display: block;
+}
+
+/* FOOTER */
+
+.footer {
+    position: relative;
+    z-index: 4;
+    width: 100%;
+    text-align: center;
+    padding: 0 15px 18px;
+    color: #6f6268;
+    font-family: "Courier New", monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+}
+
+/* TABLET AND PHONE */
+
+@media (max-width: 650px) {
+    .top-bar {
+        padding: 15px 16px;
+    }
+
+    .system-label {
+        font-size: 8px;
+        letter-spacing: 1.8px;
+    }
+
+    .local-clock {
+        font-size: 10px;
+    }
+
+    main {
+        padding: 8px 16px 24px;
+        align-items: center;
+    }
+
+    .logo {
+        width: min(100%, 400px);
+        max-height: 145px;
+    }
+
+    .intro-subtitle {
+        margin-bottom: 22px;
+        font-size: 12px;
+    }
+
+    .episode-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        max-width: 430px;
+    }
+
+    .episode-card {
+        min-height: 0;
+        padding: 15px 17px 14px;
+    }
+
+    .card-index {
+        margin-bottom: 8px;
+    }
+
+    .card-title {
+        font-size: 20px;
+        margin-bottom: 6px;
+    }
+
+    .card-action {
+        margin-top: 10px;
+    }
+
+    .status-line {
+        margin-top: 17px;
+        font-size: 9px;
+    }
+
+    .countdown-panel {
+        padding: 25px 12px 20px;
+    }
+
+    .countdown {
+        gap: 6px;
+        margin: 25px auto 20px;
+    }
+
+    .time-box {
+        padding: 14px 2px 12px;
+    }
+
+    .time-label {
+        font-size: 8px;
+        letter-spacing: 1px;
+    }
+
+    .back-button {
+        margin-bottom: 15px;
+    }
+
+    .footer {
+        padding-bottom: 12px;
+        font-size: 8px;
+    }
+}
+
+@media (max-width: 360px) {
+    .countdown {
+        gap: 4px;
+    }
+
+    .time-value {
+        font-size: 25px;
+    }
+
+    .time-label {
+        font-size: 7px;
+        letter-spacing: 0.5px;
+    }
+
+    .countdown-title {
+        font-size: 23px;
+    }
+}
+
+/* SHORT SCREENS */
+
+@media (max-height: 750px) and (min-width: 651px) {
+    main {
+        padding-top: 0;
+        padding-bottom: 15px;
+    }
+
+    .logo {
+        max-height: 125px;
+    }
+
+    .logo-wrap {
+        margin-bottom: 5px;
+    }
+
+    .intro-subtitle {
+        margin-bottom: 17px;
+    }
+
+    .episode-card {
+        min-height: 155px;
+        padding-top: 17px;
+        padding-bottom: 16px;
+    }
+
+    .status-line {
+        margin-top: 17px;
+    }
+
+    .countdown-panel {
+        padding-top: 20px;
+        padding-bottom: 17px;
+    }
+
+    .countdown {
+        margin-top: 20px;
+        margin-bottom: 15px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="background-art"></div>
+<div class="circuit-overlay"></div>
+<div class="scanlines"></div>
+<div class="glow glow-left"></div>
+<div class="glow glow-right"></div>
+
+<header class="top-bar">
+    <div class="system-label">VQ // RELEASE TRACKER</div>
+
+    <div class="local-clock">
+        <div id="localTime">--:--:--</div>
+        <small id="localZone">DETECTING LOCAL TIMEZONE</small>
+    </div>
+</header>
+
+<main>
+
+    <!-- OPENING EPISODE SELECTION PAGE -->
+
+    <section class="page" id="homePage">
+
+        <div class="logo-wrap">
+            <img
+                class="logo"
+                src="visionquest-logo.png"
+                alt="VISIONQUEST"
+                onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='block';"
+            >
+
+            <div class="logo-fallback" id="logoFallback" style="display:none">
+                VISION<span>QUEST</span>
+            </div>
+        </div>
+
+        <div class="eyebrow">THE NEXT EVOLUTION BEGINS</div>
+
+        <h1 class="intro-title">Choose Your Episode</h1>
+
+        <p class="intro-subtitle">
+            Select an upcoming release to access its countdown.
+            The system is tracking every second.
+        </p>
+
+        <div class="episode-grid" id="episodeGrid">
+
+            <button
+                class="episode-card"
+                id="episode56"
+                onclick="openEpisode('episodes56')"
+            >
+                <span class="card-index">TRANSMISSION // 01</span>
+                <span class="card-title">EPISODES 5 &amp; 6</span>
+                <span class="card-date">28 OCTOBER 2026</span>
+                <span class="card-action">ACCESS COUNTDOWN ↗</span>
+            </button>
+
+            <button
+                class="episode-card"
+                id="episode7"
+                onclick="openEpisode('episode7')"
+            >
+                <span class="card-index">TRANSMISSION // 02</span>
+                <span class="card-title">EPISODE 7</span>
+                <span class="card-date">4 NOVEMBER 2026</span>
+                <span class="card-action">ACCESS COUNTDOWN ↗</span>
+            </button>
+
+            <button
+                class="episode-card"
+                id="episode8"
+                onclick="openEpisode('episode8')"
+            >
+                <span class="card-index">TRANSMISSION // 03</span>
+                <span class="card-title">EPISODE 8</span>
+                <span class="card-date">11 NOVEMBER 2026</span>
+                <span class="card-action">ACCESS COUNTDOWN ↗</span>
+            </button>
+
+        </div>
+
+        <div class="status-line" id="systemStatus">
+            SYSTEM STATUS: MONITORING UPCOMING RELEASES
+        </div>
+    </section>
+
+
+    <!-- DEDICATED COUNTDOWN VIEW -->
+
+    <section class="page hidden" id="countdownPage">
+
+        <button class="back-button" onclick="goHome()">
+            ← BACK TO EPISODES
+        </button>
+
+        <div class="logo-wrap">
+            <img
+                class="logo"
+                src="visionquest-logo.png"
+                alt="VISIONQUEST"
+                onerror="this.style.display='none'; document.getElementById('countdownLogoFallback').style.display='block';"
+            >
+
+            <div class="logo-fallback" id="countdownLogoFallback" style="display:none">
+                VISION<span>QUEST</span>
+            </div>
+        </div>
+
+        <div class="eyebrow">RELEASE COUNTDOWN // ACTIVE</div>
+
+        <div class="countdown-panel" id="countdownPanel">
+
+            <h1 class="countdown-title" id="countdownTitle">
+                EPISODE COUNTDOWN
+            </h1>
+
+            <p class="release-label" id="releaseLabel">
+                PREPARING TRANSMISSION...
+            </p>
+
+            <div class="countdown" aria-live="off">
+                <div class="time-box">
+                    <span class="time-value" id="days">0</span>
+                    <span class="time-label">DAYS</span>
+                </div>
+
+                <div class="time-box">
+                    <span class="time-value" id="hours">00</span>
+                    <span class="time-label">HOURS</span>
+                </div>
+
+                <div class="time-box">
+                    <span class="time-value" id="minutes">00</span>
+                    <span class="time-label">MINUTES</span>
+                </div>
+
+                <div class="time-box">
+                    <span class="time-value" id="seconds">00</span>
+                    <span class="time-label">SECONDS</span>
+                </div>
+            </div>
+
+            <div class="finished-message">
+                TRANSMISSION COMPLETE
+            </div>
+
+            <div class="target-time" id="targetTime"></div>
+
+        </div>
+
+        <div class="status-line">
+            VISIONQUEST // TEMPORAL MONITOR ACTIVE
+        </div>
+
+    </section>
+
+</main>
+
+<footer class="footer">
+    VISIONQUEST SYSTEMS &nbsp; // &nbsp; TIME IS RELATIVE
+</footer>
+
+<script>
+/*
+    RELEASE SCHEDULE
+
+    These timestamps use UTC so every visitor sees the same instant,
+    displayed in their own local timezone.
+
+    EPISODE 7: Wednesday 4 November 2026 at 02:00 GMT.
+    EPISODE 8: Wednesday 11 November 2026 at 02:00 GMT.
+
+    Timestamps are UTC and display in each visitor's local timezone.
+*/
+
+const episodes = {
+    episodes56: {
+        title: "EPISODES 5 & 6",
+        dateLabel: "28 OCTOBER 2026",
+        // Episodes 5 & 6 have already released, so hide their countdown option.
+        target: Date.UTC(2026, 9, 28, 0, 0, 0),
+        buttonId: "episode56"
+    },
+
+    episode7: {
+        title: "EPISODE 7",
+        dateLabel: "4 NOVEMBER 2026",
+        target: Date.UTC(2026, 10, 4, 2, 0, 0),
+        buttonId: "episode7"
+    },
+
+    episode8: {
+        title: "EPISODE 8",
+        dateLabel: "11 NOVEMBER 2026",
+        target: Date.UTC(2026, 10, 11, 2, 0, 0),
+        buttonId: "episode8"
+    }
+};
+
+let activeEpisode = null;
+let timerInterval = null;
+
+const homePage = document.getElementById("homePage");
+const countdownPage = document.getElementById("countdownPage");
+const countdownPanel = document.getElementById("countdownPanel");
+const systemStatus = document.getElementById("systemStatus");
+
+const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+function updateLocalClock() {
+    const now = new Date();
+
+    document.getElementById("localTime").textContent =
+        new Intl.DateTimeFormat(undefined, {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: true
+        }).format(now);
+
+    document.getElementById("localZone").textContent =
+        timeZone || "LOCAL TIME";
+}
+
+function isFinished(episode) {
+    return Date.now() >= episode.target;
+}
+
+function updateHomeOptions() {
+    let available = 0;
+
+    for (const episode of Object.values(episodes)) {
+        const button = document.getElementById(episode.buttonId);
+
+        if (isFinished(episode)) {
+            button.classList.add("hidden");
+            button.disabled = true;
+        } else {
+            button.classList.remove("hidden");
+            button.disabled = false;
+            available++;
+        }
+    }
+
+    if (available === 0) {
+        systemStatus.textContent = "ALL TRANSMISSIONS COMPLETE";
+    } else {
+        systemStatus.textContent =
+            "SYSTEM STATUS: " + available + " UPCOMING RELEASE"
+            + (available === 1 ? "" : "S") + " DETECTED";
+    }
+}
+
+function openEpisode(key) {
+    const episode = episodes[key];
+
+    if (!episode) return;
+
+    if (isFinished(episode)) {
+        updateHomeOptions();
+        return;
+    }
+
+    activeEpisode = key;
+
+    homePage.classList.add("hidden");
+    countdownPage.classList.remove("hidden");
+
+    document.getElementById("countdownTitle").textContent =
+        episode.title;
+
+    document.getElementById("releaseLabel").textContent =
+        "RELEASE DATE: " + episode.dateLabel;
+
+    updateCountdown();
+    updateHomeOptions();
+
+    if (timerInterval) {
+        clearInterval(timerInterval);
+    }
+
+    timerInterval = setInterval(updateCountdown, 1000);
+
+    history.replaceState(null, "", "#" + key);
+    window.scrollTo(0, 0);
+}
+
+function goHome() {
+    activeEpisode = null;
+
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+
+    countdownPage.classList.add("hidden");
+    countdownPanel.classList.remove("finished");
+    homePage.classList.remove("hidden");
+
+    updateHomeOptions();
+
+    history.replaceState(null, "", window.location.pathname + window.location.search);
+    window.scrollTo(0, 0);
+}
+
+function updateCountdown() {
+    if (!activeEpisode) return;
+
+    const episode = episodes[activeEpisode];
+    const remaining = episode.target - Date.now();
+
+    if (remaining <= 0) {
+        document.getElementById("days").textContent = "0";
+        document.getElementById("hours").textContent = "00";
+        document.getElementById("minutes").textContent = "00";
+        document.getElementById("seconds").textContent = "00";
+
+        countdownPanel.classList.add("finished");
+        document.getElementById("targetTime").innerHTML =
+            "The scheduled countdown has ended.";
+
+        updateHomeOptions();
+
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+
+        return;
+    }
+
+    countdownPanel.classList.remove("finished");
+
+    const totalSeconds = Math.floor(remaining / 1000);
+
+    const days = Math.floor(totalSeconds / 86400);
+    const hours = Math.floor((totalSeconds % 86400) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    document.getElementById("days").textContent = days;
+    document.getElementById("hours").textContent =
+        String(hours).padStart(2, "0");
+    document.getElementById("minutes").textContent =
+        String(minutes).padStart(2, "0");
+    document.getElementById("seconds").textContent =
+        String(seconds).padStart(2, "0");
+
+    const localReleaseTime = new Date(episode.target);
+
+    document.getElementById("targetTime").innerHTML =
+        "YOUR LOCAL RELEASE TIME<br><strong>" +
+        new Intl.DateTimeFormat(undefined, {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+            hour: "numeric",
+            minute: "2-digit",
+            timeZoneName: "short"
+        }).format(localReleaseTime) +
+        "</strong><br>TIMEZONE: " + escapeHTML(timeZone);
+}
+
+function escapeHTML(value) {
+    return String(value).replace(/[&<>"']/g, function (character) {
+        return {
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        }[character];
+    });
+}
+
+function loadFromAddress() {
+    const key = window.location.hash.slice(1);
+
+    if (key && episodes[key] && !isFinished(episodes[key])) {
+        openEpisode(key);
+    } else {
+        updateHomeOptions();
+    }
+}
+
+updateLocalClock();
+setInterval(updateLocalClock, 1000);
+
+updateHomeOptions();
+loadFromAddress();
+</script>
+
+</body>
+</html>
